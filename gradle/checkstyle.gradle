@@ -1,0 +1,41 @@
+apply plugin: 'checkstyle'
+
+def versions = [
+        checkstyle: '10.5.0',
+]
+
+configurations {
+    checkstyleConfig
+}
+
+dependencies {
+    checkstyleConfig("com.puppycrawl.tools:checkstyle:${versions.checkstyle}") {
+        transitive = false
+    }
+}
+
+checkstyle {
+    config = resources.text.fromArchiveEntry(configurations.checkstyleConfig, 'google_checks.xml')
+    configProperties = [
+            "org.checkstyle.google.suppressionfilter.config" : project(':').file('gradle/config/checkstyle/suppressions.xml')
+    ]
+    toolVersion = "${versions.checkstyle}"
+    ignoreFailures = false
+    showViolations = true
+    maxErrors = 0
+    maxWarnings = 0
+}
+
+checkstyleMain {
+    source = fileTree('src/main/java')
+    excludes = [
+            '**/com/github/tenxfuturetechnologies/kafkaconnecticeberg/avro/**/*.java'
+    ]
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}

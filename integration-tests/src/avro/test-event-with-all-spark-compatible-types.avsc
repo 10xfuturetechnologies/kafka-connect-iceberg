@@ -1,0 +1,206 @@
+{
+  "name": "TestEvent",
+  "namespace": "com.github.tenxfuturetechnologies.kafkaconnecticeberg.avro.test",
+  "doc": "This schema contains all the types supported by the Iceberg sink except for time types which cannot be read with Spark",
+  "type": "record",
+  "fields": [
+    {
+      "default": null,
+      "name": "boolField",
+      "type": [
+        "null",
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "intField",
+      "type": [
+        "null",
+        {
+          "type": "int"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "longField",
+      "type": [
+        "null",
+        {
+          "type": "long"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "floatField",
+      "type": [
+        "null",
+        {
+          "type": "float"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "doubleField",
+      "type": [
+        "null",
+        {
+          "type": "double"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "bytesField",
+      "type": [
+        "null",
+        {
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "stringField",
+      "type": [
+        "null",
+        {
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "recordField",
+      "type": [
+        "null",
+        {
+          "name": "TestRecord",
+          "type": "record",
+          "fields": [
+            {"name": "id", "type": "long"},
+            {"name": "name", "type": "string"}
+          ]
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "enumField",
+      "type": [
+        "null",
+        {
+          "name": "TestEnum",
+          "type": "enum",
+          "symbols": ["A", "B", "C"]
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "arrayField",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": "string"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "mapField",
+      "type": [
+        "null",
+        {
+          "type": "map",
+          "values": "long"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "decimalLogical",
+      "type": [
+        "null",
+        {
+          "type": "bytes",
+          "logicalType": "decimal",
+          "precision": 6,
+          "scale": 2
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "uuidLogical",
+      "type": [
+        "null",
+        {
+          "type": "string",
+          "logicalType": "uuid"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "dateLogical",
+      "type": [
+        "null",
+        {
+          "type": "int",
+          "logicalType": "date"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "timestampMillisLogical",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "timestamp-millis"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "timestampMicrosLogical",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "timestamp-micros"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "localTimestampMillisLogical",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-millis"
+        }
+      ]
+    },
+    {
+      "default": null,
+      "name": "localTimestampMicrosLogical",
+      "type": [
+        "null",
+        {
+          "type": "long",
+          "logicalType": "local-timestamp-micros"
+        }
+      ]
+    }
+  ]
+}

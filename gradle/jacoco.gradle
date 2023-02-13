@@ -1,0 +1,29 @@
+apply plugin: 'jacoco'
+
+jacoco {
+  toolVersion = "0.8.8"
+  reportsDir = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+  reports {
+    xml.enabled = true
+    csv.enabled = false
+    html.enabled = true
+    html.destination file("$buildDir/reports/jacoco/html")
+  }
+}
+
+//TODO: change rule.limit.minimum to 85 once the proper coverage has been added
+jacocoTestCoverageVerification {
+  violationRules {
+    rule {
+      limit {
+        minimum = 0.0
+      }
+    }
+  }
+}
+
+// to run coverage verification during the build (and fail when appropriate)
+check.dependsOn jacocoTestCoverageVerification
