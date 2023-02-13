@@ -1,3 +1,6 @@
+![build](https://github.com/10xfuturetechnologies/kafka-connect-iceberg/actions/workflows/ci.yml/badge.svg?event=push)
+![lcense](https://img.shields.io/github/license/10xfuturetechnologies/kafka-connect-iceberg.svg)
+
 # Kafka Connect Iceberg sink
 
 A Kafka Connect connector which uses the Iceberg APIs to write data directly into an Iceberg table.

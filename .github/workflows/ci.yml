@@ -1,0 +1,43 @@
+name: CI build
+
+on:
+  push:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - closed
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+        cache: 'gradle'
+        check-latest: true
+
+    - name: Validate Gradle wrapper
+      uses: gradle/wrapper-validation-action@v1
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Compile
+      run: ./gradlew --no-daemon clean build -x integrationTest
+
+    - name: Integration tests
+      run: ./gradlew --no-daemon --continue integrationTest
+
+# TODO
+#    - name: Upload coverage
+#      uses: codecov/codecov-action@v3
+#      with:
+#        token: ${{ secrets.CODECOV_TOKEN }}
+#        fail_ci_if_error: true
