@@ -1,0 +1,147 @@
+buildscript {
+  ext {
+    icebergVersion                = '1.1.0'
+    hadoopVersion                 = '3.3.3'
+    kafkaVersion                  = '3.3.1'
+    kafkaSchemaRegistryVersion    = '7.3.1'
+    kafkaConnectStorageVersion    = '11.0.15'
+    awsSdkVersion                 = '2.17.245'
+    slf4jVersion                  = '1.7.36'
+    logbackVersion                = '1.4.5'
+    commonsLang3Version           = '3.12.0'
+    guavaVersion                  = '31.1-jre'
+
+    //test libs
+    junit5Version                 = '5.9.2'
+    assertjVersion                = '3.24.1'
+    mockitoVersion                = '4.11.0'
+    awaitilityVersion             = '4.2.0'
+    testcontainersVersion         = '1.17.6'
+  }
+}
+
+plugins {
+  id 'idea'
+  id 'jacoco'
+  id 'checkstyle'
+  id 'java-library'
+  id 'maven-publish'
+  id 'io.spring.dependency-management' version '1.1.0'
+  id 'pl.allegro.tech.build.axion-release' version '1.14.3'
+  id 'org.unbroken-dome.test-sets' version '4.0.0'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+scmVersion {
+  useHighestVersion = true
+  tag {
+    prefix = ''
+  }
+}
+
+group properties['group']
+project.version = scmVersion.version
+
+defaultTasks('clean', 'build')
+
+allprojects {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://packages.confluent.io/maven/" }
+  }
+}
+
+subprojects {
+  apply plugin: 'idea'
+  apply plugin: 'io.spring.dependency-management'
+  apply plugin: 'org.unbroken-dome.test-sets'
+
+  apply from: "${rootDir}/gradle/publish.gradle"
+  apply from: "${rootDir}/gradle/jacoco.gradle"
+  apply from: "${rootDir}/gradle/checkstyle.gradle"
+
+  project.version = parent?.scmVersion?.version ?: error("Parent project doesn't configure scmVersion!")
+
+  dependencyManagement {
+    imports {
+      mavenBom "software.amazon.awssdk:bom:${awsSdkVersion}"
+      mavenBom "org.mockito:mockito-bom:${mockitoVersion}"
+      mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
+    }
+    dependencies {
+      dependency "org.apache.kafka:kafka-clients:${kafkaVersion}"
+
+      dependency "org.apache.commons:commons-lang3:${commonsLang3Version}"
+
+      dependency "org.apache.iceberg:iceberg-core:${icebergVersion}"
+      dependency "org.apache.iceberg:iceberg-aws:${icebergVersion}"
+      dependency "org.apache.iceberg:iceberg-data:${icebergVersion}"
+      dependency "org.apache.iceberg:iceberg-arrow:${icebergVersion}"
+      dependency "org.apache.iceberg:iceberg-parquet:${icebergVersion}"
+      dependency "org.apache.iceberg:iceberg-orc:${icebergVersion}"
+
+      dependency "org.apache.hadoop:hadoop-common:${hadoopVersion}"
+      dependency "org.apache.hadoop:hadoop-aws:${hadoopVersion}"
+
+      dependency "io.confluent:kafka-connect-storage-common:${kafkaConnectStorageVersion}"
+      dependency "io.confluent:kafka-connect-storage-core:${kafkaConnectStorageVersion}"
+
+      dependency "io.confluent:kafka-schema-registry-client:${kafkaSchemaRegistryVersion}"
+      dependency "io.confluent:kafka-schema-serializer:${kafkaSchemaRegistryVersion}"
+      dependency "io.confluent:kafka-avro-serializer:${kafkaSchemaRegistryVersion}"
+      dependency "io.confluent:kafka-connect-avro-converter:${kafkaSchemaRegistryVersion}"
+      dependency "io.confluent:kafka-connect-avro-data:${kafkaSchemaRegistryVersion}"
+
+      dependency "ch.qos.logback:logback-classic:${logbackVersion}"
+
+      dependency "com.google.guava:guava:${guavaVersion}"
+    }
+  }
+
+  dependencies {
+    compileOnly "org.apache.kafka:connect-api:${kafkaVersion}"
+    compileOnly "org.apache.kafka:connect-runtime:${kafkaVersion}"
+    compileOnly "org.slf4j:slf4j-api:${slf4jVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junit5Version}"
+    testImplementation "org.junit.jupiter:junit-jupiter-engine:${junit5Version}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junit5Version}"
+    testImplementation "org.junit.vintage:junit-vintage-engine:${junit5Version}"
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
+    testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
+    testImplementation "org.apache.kafka:connect-api:${kafkaVersion}"
+    testImplementation "org.apache.kafka:connect-runtime:${kafkaVersion}"
+  }
+
+  testSets {
+    integrationTest {
+      dirName = 'integration-test'
+    }
+  }
+
+  tasks.check.dependsOn tasks.integrationTest
+
+  test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+    testLogging { events "passed", "skipped", "failed" }
+  }
+
+  integrationTest {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+    testLogging { events "passed", "skipped", "failed" }
+  }
+
+  processResources {
+    filter {
+      it.replace('@VERSION@', project.version)
+    }
+  }
+}

@@ -1,0 +1,69 @@
+buildscript {
+  ext {
+    jacksonVersion          = '2.13.3'
+    javassistVersion        = '3.29.2-GA'
+  }
+}
+
+plugins {
+  id 'distribution'
+}
+
+defaultTasks('clean', 'build', 'distZip')
+
+configurations {
+  zipDistribution {
+    canBeConsumed = true
+    canBeResolved = false
+  }
+}
+
+artifacts {
+  zipDistribution(distZip)
+}
+
+dependencies {
+  def withoutConnectDeps = {
+    exclude group: 'org.slf4j'
+    exclude group: 'log4j'
+    exclude group: 'com.fasterxml.jackson.core'
+    exclude group: 'org.eclipse.jetty'
+    exclude group: 'org.apache.zookeeper'
+  }
+
+  compileOnly 'io.confluent:kafka-connect-avro-data'
+  implementation 'com.google.guava:guava'
+  implementation 'org.apache.iceberg:iceberg-core', withoutConnectDeps
+  implementation 'org.apache.iceberg:iceberg-aws', withoutConnectDeps
+  implementation 'org.apache.iceberg:iceberg-data', withoutConnectDeps
+  implementation 'org.apache.iceberg:iceberg-arrow', withoutConnectDeps
+  implementation 'org.apache.iceberg:iceberg-parquet', withoutConnectDeps
+  implementation 'org.apache.iceberg:iceberg-orc', withoutConnectDeps
+  implementation 'software.amazon.awssdk:url-connection-client', withoutConnectDeps
+  implementation 'software.amazon.awssdk:auth', withoutConnectDeps
+  implementation 'software.amazon.awssdk:sts', withoutConnectDeps
+  implementation 'software.amazon.awssdk:glue', withoutConnectDeps
+  implementation 'software.amazon.awssdk:s3', withoutConnectDeps
+  implementation 'org.apache.hadoop:hadoop-common', withoutConnectDeps
+  implementation 'org.apache.hadoop:hadoop-aws', withoutConnectDeps
+  implementation 'io.confluent:kafka-connect-storage-core', withoutConnectDeps
+  implementation 'org.apache.commons:commons-lang3', withoutConnectDeps
+}
+
+distributions {
+  main {
+    contents {
+      into('lib/') {
+        from jar
+        from configurations.runtimeClasspath
+        dirMode = 0755
+        fileMode = 0644
+      }
+      from(processResources.destinationDir) {
+        include 'manifest.json'
+        // TODO include docs, logo, etc...
+      }
+    }
+  }
+}
+tasks.distTar.enabled = false

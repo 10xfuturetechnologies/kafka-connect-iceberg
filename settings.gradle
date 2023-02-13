@@ -1,0 +1,12 @@
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    mavenLocal()
+    mavenCentral()
+  }
+}
+
+rootProject.name = 'kafka-connect-iceberg'
+include 'sink', 'integration-tests'
+
+project(":sink").name = "${rootProject.name}-sink"

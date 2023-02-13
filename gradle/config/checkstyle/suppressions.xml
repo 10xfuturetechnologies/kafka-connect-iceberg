@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+  "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+  "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<suppressions>
+  <!-- ignore Javadoc checks -->
+  <suppress checks="JavadocPackage" files=".*"/>
+  <suppress checks="JavadocMethod" files=".*"/>
+  <suppress checks="JavadocType" files=".*"/>
+
+  <!-- Suppressions for copied files -->
+  <suppress checks="AbbreviationAsWordInName" files=".*IT.java"/>
+
+  <!-- Generated code -->
+  <suppress checks=".*" files=".*.com.github.tenxfuturetechnologies.kafkaconnecticeberg.avro..*.java"/>
+</suppressions>

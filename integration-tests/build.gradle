@@ -1,0 +1,76 @@
+buildscript {
+  ext {
+    avroVersion        = '1.11.1'
+    parquetVersion     = '1.12.3'
+    minioVersion       = '8.4.6'
+    sparkVersion       = '3.3.2'
+    sparkScalaVersion  = '2.13'
+  }
+}
+
+plugins {
+  id "com.github.davidmc24.gradle.plugin.avro-base" version "1.6.0"
+}
+
+configurations {
+  instrumentedClasspath {
+    canBeConsumed = false
+    canBeResolved = true
+  }
+}
+
+dependencies {
+  implementation "org.apache.avro:avro:${avroVersion}"
+
+  instrumentedClasspath(project(path: ":kafka-connect-iceberg-sink", configuration: 'zipDistribution'))
+  integrationTestImplementation project(":kafka-connect-iceberg-sink")
+
+  integrationTestImplementation 'org.slf4j:slf4j-api'
+  integrationTestImplementation 'ch.qos.logback:logback-classic'
+
+  integrationTestImplementation 'org.apache.hadoop:hadoop-common'
+  integrationTestImplementation 'org.apache.hadoop:hadoop-aws'
+
+  integrationTestImplementation "org.apache.parquet:parquet-avro:${parquetVersion}"
+
+  integrationTestImplementation 'org.testcontainers:testcontainers'
+  integrationTestImplementation 'org.testcontainers:junit-jupiter'
+  integrationTestImplementation 'org.testcontainers:kafka'
+
+  integrationTestImplementation 'io.confluent:kafka-schema-serializer'
+  integrationTestImplementation 'io.confluent:kafka-avro-serializer'
+
+  integrationTestImplementation "io.minio:minio:${minioVersion}"
+
+  integrationTestImplementation "org.apache.iceberg:iceberg-spark-3.3_${sparkScalaVersion}:${icebergVersion}"
+
+  integrationTestImplementation "org.apache.spark:spark-core_${sparkScalaVersion}:${sparkVersion}"
+  integrationTestImplementation "org.apache.spark:spark-sql_${sparkScalaVersion}:${sparkVersion}"
+}
+
+def zipFilter =  {
+  include "distributions/*.zip"
+  rename '(.*)-\\d+\\.\\d+\\.\\d+(-SNAPSHOT)?(.*)', '$1$3'
+}
+
+task copyDistributions(type: Copy) {
+  dependsOn ':kafka-connect-iceberg-sink:distZip'
+  from(project(':kafka-connect-iceberg-sink').buildDir), zipFilter
+  into "$buildDir/deps"
+}
+
+import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
+
+tasks.register('generateAvroJava', GenerateAvroJavaTask) {
+  source('src/avro')
+  outputDir = file("${project.buildDir}/avro")
+}
+
+tasks.compileJava.configure {
+  source tasks.generateAvroJava
+}
+
+tasks.integrationTest {
+  dependsOn tasks.copyDistributions
+  dependsOn tasks.generateAvroJava
+}
