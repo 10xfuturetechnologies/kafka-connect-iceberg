@@ -8,7 +8,7 @@ publishing {
   repositories {
     maven {
       name = "GitHubPackages"
-      url = "${releasesRepoUrl}/${gitOrg}/${project.name}"
+      url = "${releasesRepoUrl}/${gitOrg}/${rootProject.name}"
       credentials {
         username = System.getenv("GIT_USERNAME")
         password = System.getenv("GIT_PASSWORD")
