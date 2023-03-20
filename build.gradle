@@ -14,7 +14,7 @@ buildscript {
     //test libs
     junit5Version                 = '5.9.2'
     assertjVersion                = '3.24.1'
-    mockitoVersion                = '4.11.0'
+    mockitoVersion                = '5.2.0'
     awaitilityVersion             = '4.2.0'
     testcontainersVersion         = '1.17.6'
   }
