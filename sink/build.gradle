@@ -1,7 +1,6 @@
 buildscript {
   ext {
     jacksonVersion          = '2.13.3'
-    javassistVersion        = '3.29.2-GA'
   }
 }
 
@@ -67,3 +66,11 @@ distributions {
   }
 }
 tasks.distTar.enabled = false
+
+publishing {
+  publications {
+    distribution(MavenPublication) {
+      artifact distZip
+    }
+  }
+}
