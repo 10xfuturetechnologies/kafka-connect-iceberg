@@ -37,7 +37,7 @@ targetCompatibility = JavaVersion.VERSION_11
 scmVersion {
   useHighestVersion = true
   tag {
-    prefix = 'v'
+    prefix = ''
     useHighestVersion = true
   }
 }
