@@ -4,9 +4,9 @@ on:
   push:
   pull_request:
     types:
-      - opened
-      - reopened
-      - closed
+    - opened
+    - reopened
+    - closed
   workflow_dispatch:
 
 jobs:

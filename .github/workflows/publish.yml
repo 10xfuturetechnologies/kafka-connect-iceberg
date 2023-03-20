@@ -1,9 +1,10 @@
 name: Publish
- 
+
 on:
   release:
     types:
-      - created
+    - created
+  workflow_call:
 
 jobs:
   publish:
@@ -29,7 +30,7 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-  
+
     - name: Publish
       run: ./gradlew --no-daemon --continue build publish
       env:
