@@ -1,6 +1,6 @@
 buildscript {
   ext {
-    icebergVersion                = '1.1.0'
+    icebergVersion                = '1.2.0'
     hadoopVersion                 = '3.3.4'
     kafkaVersion                  = '3.3.1'
     kafkaSchemaRegistryVersion    = '7.3.2'
