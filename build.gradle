@@ -16,7 +16,7 @@ buildscript {
     assertjVersion                = '3.24.1'
     mockitoVersion                = '5.3.1'
     awaitilityVersion             = '4.2.0'
-    testcontainersVersion         = '1.17.6'
+    testcontainersVersion         = '1.18.0'
   }
 }
 
