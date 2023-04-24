@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      release_id: ${{ steps.create_release.outputs.id }}
     steps:
     - uses: actions/checkout@v3
       with:
@@ -43,7 +45,8 @@ jobs:
 
   publish:
     permissions:
-      contents: read
-      packages: write
+      contents: write
     uses: ./.github/workflows/publish.yml
-
+    needs: release
+    with:
+      release_id: ${{ needs.release.outputs.release_id }}
