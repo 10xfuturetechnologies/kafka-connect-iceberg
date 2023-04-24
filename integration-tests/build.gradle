@@ -3,7 +3,7 @@ buildscript {
     avroVersion        = '1.11.1'
     parquetVersion     = '1.12.3'
     minioVersion       = '8.5.2'
-    sparkVersion       = '3.3.2'
+    sparkVersion       = '3.4.0'
     sparkScalaVersion  = '2.13'
   }
 }
