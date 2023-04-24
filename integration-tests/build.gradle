@@ -2,7 +2,7 @@ buildscript {
   ext {
     avroVersion        = '1.11.1'
     parquetVersion     = '1.12.3'
-    minioVersion       = '8.4.6'
+    minioVersion       = '8.5.2'
     sparkVersion       = '3.3.2'
     sparkScalaVersion  = '2.13'
   }
