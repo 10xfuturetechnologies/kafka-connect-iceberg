@@ -2,6 +2,10 @@ name: Publish
 
 on:
   workflow_call:
+    inputs:
+      release_id:
+        required: true
+        type: string
 
 jobs:
   publish:
@@ -37,4 +41,5 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tags: true
+        release_id: ${{ inputs.release_id }}
         file: "sink/build/distributions/*.zip"

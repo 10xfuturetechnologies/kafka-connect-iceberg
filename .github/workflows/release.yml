@@ -46,4 +46,5 @@ jobs:
       contents: read
       packages: write
     uses: ./.github/workflows/publish.yml
-
+    with:
+      release_id: ${{steps.create_release.outputs.id}}
