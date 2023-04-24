@@ -28,8 +28,13 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Build
+      run: ./gradlew --no-daemon --continue build
+
     - name: Publish
-      run: ./gradlew --no-daemon --continue build publish
+      uses: actions/upload-to-github-release@v1
       env:
-        GIT_USERNAME: ${{ env.GITHUB_ACTOR }}
-        GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tags: true
+        file: "sink/build/distributions/*.zip"
