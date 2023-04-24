@@ -2,13 +2,16 @@ name: Publish
 
 on:
   workflow_call:
+    inputs:
+      release_id:
+        required: true
+        type: string
 
 jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      packages: write
+      contents: write
     steps:
     - uses: actions/checkout@v3
       with:
@@ -28,8 +31,14 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
+    - name: Build
+      run: ./gradlew --no-daemon --continue build
+
     - name: Publish
-      run: ./gradlew --no-daemon --continue build publish
+      uses: xresloader/upload-to-github-release@v1
       env:
-        GIT_USERNAME: ${{ env.GITHUB_ACTOR }}
-        GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tags: true
+        release_id: ${{ inputs.release_id }}
+        file: "sink/build/distributions/*.zip"
